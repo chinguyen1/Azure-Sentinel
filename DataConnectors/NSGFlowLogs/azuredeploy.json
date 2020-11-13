@@ -16,7 +16,7 @@
         "Consumption"
       ],
       "metadata": {
-        "description": "ServicePlan creates an App Service Plan and is billed according to that plan. Consumption bills according to https://azure.microsoft.com/en-gb/pricing/details/functions/."
+        "description": "ServicePlan creates an App Service Plan and is billed according to that plan. Consumption bills according to https://azure.microsoft.com/pricing/details/functions/."
       }
     },
     "appServicePlanTier": {
@@ -31,14 +31,14 @@
       ],
       "defaultValue": "",
       "metadata": {
-        "description": "ServicePlan only: See here for details: https://azure.microsoft.com/en-us/pricing/details/app-service/windows/"
+        "description": "ServicePlan only: See here for details: https://azure.microsoft.com/pricing/details/app-service/windows/"
       }
     },
     "appServicePlanName": {
       "type": "string",
       "defaultValue": "",
       "metadata": {
-        "description": "ServicePlan only: Plan name must match with plan tier. See here for details: https://azure.microsoft.com/en-us/pricing/details/app-service/windows/"
+        "description": "ServicePlan only: Plan name must match with plan tier. See here for details: https://azure.microsoft.com/pricing/details/app-service/windows/"
       }
     },
     "appServicePlanCapacity": {
@@ -47,7 +47,7 @@
     },
     "githubRepoURL": {
       "type": "string",
-      "defaultValue": "https://github.com/Microsoft/AzureNetworkWatcherNSGFlowLogsConnector.git"
+      "defaultValue": "https://github.com/chinguyen1/NSGConnector.git"
     },
     "githubRepoBranch": {
       "type": "string",
