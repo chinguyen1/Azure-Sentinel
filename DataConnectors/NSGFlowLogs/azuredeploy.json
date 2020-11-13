@@ -47,7 +47,7 @@
     },
     "githubRepoURL": {
       "type": "string",
-      "defaultValue": "https://github.com/chinguyen1/NSGConnector.git"
+      "defaultValue": "https://github.com/chinguyen1/Azure-Sentinel/tree/chi-15/DataConnectors/NSGFlowLogs.git"
     },
     "githubRepoBranch": {
       "type": "string",
@@ -75,7 +75,7 @@
         "logstash",
         "loganalytics"
       ],
-      "defaultValue": "arcsight",
+      "defaultValue": "log analytics",
       "metadata": {
         "description": "Select the desired destination for your logs."
       }
@@ -122,11 +122,11 @@
         "description": "Event hub only: Event hub name."
       }
     },
-    "customerId": {
+    "workspaceId": {
       "type": "string",
       "defaultValue": "",
       "metadata": {
-        "description": "customer Id for log analytics."
+        "description": "workspace Id for log analytics."
       }
     },
     "sharedKey": {
