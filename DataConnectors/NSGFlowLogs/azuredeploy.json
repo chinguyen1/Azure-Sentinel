@@ -245,7 +245,7 @@
             },
             {
               "name": "WEBSITE_RUN_FROM_PACKAGE",
-              "value": "https://aka.ms/NSGFlowLogs"
+              "value": "https://aka.ms/NSGinTesting"
             },
             {
               "name": "blobContainerName",
