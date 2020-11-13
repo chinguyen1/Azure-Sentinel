@@ -47,7 +47,7 @@
     },
     "githubRepoURL": {
       "type": "string",
-      "defaultValue": "https://github.com/chinguyen1/Azure-Sentinel/tree/chi-15/DataConnectors/NSGFlowLogs.git"
+      "defaultValue": "https://github.com/chinguyen1/NSGconnector.git"
     },
     "githubRepoBranch": {
       "type": "string",
