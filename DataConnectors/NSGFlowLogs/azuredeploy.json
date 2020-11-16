@@ -44,15 +44,7 @@
     "appServicePlanCapacity": {
       "type": "int",
       "defaultValue": 2
-    },
-    "githubRepoURL": {
-      "type": "string",
-      "defaultValue": "https://github.com/chinguyen1/NSGconnector.git"
-    },
-    "githubRepoBranch": {
-      "type": "string",
-      "defaultValue": "master"
-    },
+    },    
     "nsgSourceDataConnection": {
       "type": "string",
       "metadata": {
@@ -143,7 +135,8 @@
     "Consumption": "[concat('consumption', parameters('appName'))]",
     "hostingPlanName": "[variables(parameters('appServicePlan'))]",
     "storageAccountName": "[concat('func', uniquestring(resourceGroup().id))]",
-    "storageAccountid": "[concat(resourceGroup().id,'/providers/','Microsoft.Storage/storageAccounts/', variables('storageAccountName'))]"
+    "storageAccountid": "[concat(resourceGroup().id,'/providers/','Microsoft.Storage/storageAccounts/', variables('storageAccountName'))]",
+    "storageContainerName": "insights-logs-networksecuritygroupflowevent"
   },
   "resources": [
     {
@@ -182,9 +175,48 @@
       }
     },
     {
+      "type": "Microsoft.Storage/storageAccounts/blobServices",
+      "apiVersion": "2019-06-01",
+      "name": "[concat(variables('storageAccountName'), '/default')]",
+      "dependsOn": [
+        "[resourceId('Microsoft.Storage/storageAccounts', tolower(variables('storageAccountName')))]"
+      ],
+      "sku": {
+        "name": "Standard_LRS",
+        "tier": "Standard"
+      },
+      "properties": {
+        "cors": {
+          "corsRules": [
+          ]
+        },
+        "deleteRetentionPolicy": {
+          "enabled": false
+        }
+      }
+    },
+    {
+      "type": "Microsoft.Storage/storageAccounts/fileServices",
+      "apiVersion": "2019-06-01",
+      "name": "[concat(variables('storageAccountName'), '/default')]",
+      "dependsOn": [
+        "[resourceId('Microsoft.Storage/storageAccounts', tolower(variables('storageAccountName')))]"
+      ],
+      "sku": {
+        "name": "Standard_LRS",
+        "tier": "Standard"
+      },
+      "properties": {
+        "cors": {
+          "corsRules": [
+          ]
+        }
+      }
+    },
+    {
       "condition": "[equals(parameters('appServicePlan'), 'ServicePlan')]",
       "type": "Microsoft.Web/serverfarms",
-      "apiVersion": "2018-11-01",
+      "apiVersion": "2018-02-01",
       "name": "[variables('ServicePlan')]",
       "location": "[resourceGroup().location]",
       "sku": {
@@ -196,7 +228,7 @@
     {
       "condition": "[equals(parameters('appServicePlan'), 'Consumption')]",
       "type": "Microsoft.Web/serverfarms",
-      "apiVersion": "2018-11-01",
+      "apiVersion": "2018-02-01",
       "name": "[variables('Consumption')]",
       "location": "[resourceGroup().location]",
       "properties": {
@@ -233,11 +265,15 @@
             },
             {
               "name": "WEBSITE_CONTENTSHARE",
-              "value": "[toLower(variables('functionAppName'))]"
+              "value": "[toLower(variables('storageAccountName'))]"
             },
             {
               "name": "FUNCTIONS_EXTENSION_VERSION",
               "value": "~2"
+            },
+            {
+              "name": "FUNCTIONS_WORKER_RUNTIME",
+              "value": "dotnet"
             },
             {
               "name": "WEBSITE_NODE_DEFAULT_VERSION",
@@ -245,11 +281,11 @@
             },
             {
               "name": "WEBSITE_RUN_FROM_PACKAGE",
-              "value": "https://aka.ms/NSGinTesting"
+              "value": "https://aka.ms/githubazurefunctionzip"
             },
             {
               "name": "blobContainerName",
-              "value": "insights-logs-networksecuritygroupflowevent"
+              "value": "[toLower(variables('storageContainerName'))]"
             },
             {
               "name": "nsgSourceDataAccount",
@@ -292,6 +328,14 @@
               "value": "[parameters('cefLogAccount')]"
             },
             {
+              "name": "workspaceId",
+              "value": "[parameters('workspaceId')]"
+            },
+            {
+              "name": "sharedKey",
+              "value": "[parameters('sharedKey')]"
+            },
+            {
               "name": "logIncomingJSON",
               "value": "false"
             },
@@ -301,22 +345,55 @@
             }
           ]
         }
-      },
-      "resources": [
-        {
-          "apiVersion": "2018-11-01",
-          "name": "web",
-          "type": "sourcecontrols",
-          "dependsOn": [
-            "[resourceId('Microsoft.Web/Sites', variables('functionAppName'))]"
-          ],
-          "properties": {
-            "RepoUrl": "[parameters('githubRepoURL')]",
-            "branch": "[parameters('githubRepoBranch')]",
-            "IsManualIntegration": true
-          }
-        }
-      ]
+      }
+    },
+    {
+      "type": "Microsoft.Storage/storageAccounts/blobServices/containers",
+      "apiVersion": "2019-06-01",
+      "name": "[concat(variables('storageAccountName'), '/default/azure-webjobs-hosts')]",
+      "dependsOn": [
+        "[resourceId('Microsoft.Storage/storageAccounts/blobServices', variables('storageAccountName'), 'default')]",
+        "[resourceId('Microsoft.Storage/storageAccounts', variables('storageAccountName'))]"
+      ],
+      "properties": {
+        "publicAccess": "None"
+      }
+    },
+    {
+      "type": "Microsoft.Storage/storageAccounts/blobServices/containers",
+      "apiVersion": "2019-06-01",
+      "name": "[concat(variables('storageAccountName'), '/default/azure-webjobs-secrets')]",
+      "dependsOn": [
+        "[resourceId('Microsoft.Storage/storageAccounts/blobServices', variables('storageAccountName'), 'default')]",
+        "[resourceId('Microsoft.Storage/storageAccounts', variables('storageAccountName'))]"
+      ],
+      "properties": {
+        "publicAccess": "None"
+      }
+    },
+    {
+      "type": "Microsoft.Storage/storageAccounts/fileServices/shares",
+      "apiVersion": "2019-06-01",
+      "name": "[concat(variables('storageAccountName'), '/default/', tolower(variables('storageAccountName')))]",
+      "dependsOn": [
+        "[resourceId('Microsoft.Storage/storageAccounts/fileServices', variables('storageAccountName'), 'default')]",
+        "[resourceId('Microsoft.Storage/storageAccounts', variables('storageAccountName'))]"
+      ],
+      "properties": {
+        "shareQuota": 5120
+      }
+    },
+    {
+      "type": "Microsoft.Storage/storageAccounts/blobServices/containers",
+      "apiVersion": "2019-06-01",
+      "name": "[concat(variables('storageAccountName'), concat('/default/', variables('storageContainerName')))]",
+      "dependsOn": [
+        "[resourceId('Microsoft.Storage/storageAccounts/blobServices', variables('storageAccountName'), 'default')]",
+        "[resourceId('Microsoft.Storage/storageAccounts', variables('storageAccountName'))]"
+      ],
+      "properties": {
+        "publicAccess": "None"
+      }
     }
   ]
 }
