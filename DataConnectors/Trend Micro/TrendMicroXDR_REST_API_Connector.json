@@ -7,7 +7,7 @@
     "graphQueries": [
         {
             "metricName": "Total data received",
-            "legend": "Trend Micro XDR Logs",
+            "legend": "TrendMicro_XDR_CL",
             "baseQuery": "TrendMicro_XDR_CL\n    | project-reorder alertTriggerTimestamp_t*, workbenchId_s, score_s, model_s, impactScope_account_s, impactScope_host_s, modelSeverity_s\n  | project-away schemaVersion_s, alertProvider_s, SourceSystem, TenantId"
         }
     ],
@@ -59,7 +59,7 @@
         "resourceProvider": [
             {
                 "provider": "Microsoft.OperationalInsights/workspaces",
-                "permissionsDisplayText": "read and write permissions are required.",
+                "permissionsDisplayText": "read and write permissions on the workspace are required.",
                 "providerDisplayName": "Workspace",
                 "scope": "Workspace",
                 "requiredPermissions": {
@@ -70,7 +70,7 @@
             },
             {
                 "provider": "Microsoft.OperationalInsights/workspaces/sharedKeys",
-                "permissionsDisplayText": "read permissions to shared keys for the workspace are required. [See the documentation to learn more about workspace keys](https://docs.microsoft.com/azure/azure-monitor/platform/agent-windows#obtain-workspace-id-and-key)",
+                "permissionsDisplayText": "read permissions to shared keys for the workspace are required. [See the documentation to learn more about workspace keys](https://docs.microsoft.com/azure/azure-monitor/platform/agent-windows#obtain-workspace-id-and-key).",
                 "providerDisplayName": "Keys",
                 "scope": "Workspace",
                 "requiredPermissions": {
@@ -130,5 +130,21 @@
             "title": "Azure Resource Manager (ARM) Template Deployment",
             "description": "This method provides an automated deployment of the Trend Micro XDR connector using an ARM Tempate.\n\n1. Click the **Deploy to Azure** button below. \n\n\t[![Deploy To Azure](https://aka.ms/deploytoazurebutton)](https://aka.ms/sentinel-trendmicroxdr-azuredeploy)\n2. Select the preferred **Subscription**, **Resource Group** and **Location**. \n3. Enter a unique **Function Name**, **Workspace ID**, **Workspace Key**, **API Token** and **Region Code**. \n - Note: Provide the appropriate region code based on where your Trend Micro XDR instance is deployed: us, eu, au, in, sg, jp  \n - Note: If using Azure Key Vault secrets for any of the values above, use the`@Microsoft.KeyVault(SecretUri={Security Identifier})`schema in place of the string values. Refer to [Key Vault references documentation](https://docs.microsoft.com/azure/app-service/app-service-key-vault-references) for further details. \n4. Mark the checkbox labeled **I agree to the terms and conditions stated above**. \n5. Click **Purchase** to deploy."
         }
-    ]
+    ],
+    "metadata": {
+        "id": "61d3a450-20c0-4f0e-9209-b8cf41d9a774",
+        "version": "1.0.0",
+        "kind": "dataConnector",
+        "source": {
+            "kind": "community"
+        },
+        "author": {
+            "name": "Trend Micro"
+        },
+        "support": {
+            "name": "Trend Micro",
+            "link": "https://success.trendmicro.com/technical-support",
+            "tier": "developer"
+        }
+    }
 }
